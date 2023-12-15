@@ -1,0 +1,16 @@
+$body-font-family: 'CooperHewittBook';
+$title-font: 'CooperHewittBook';
+
+:root {
+  font-family: $body-font-family, sans-serif;
+  background: #ddd;
+}
+
+.text-h1,
+.text-h2,
+.text-h3,
+.text-h4,
+.text-h5,
+.text-h6 {
+  font-family: $title-font, sans-serif !important;
+}

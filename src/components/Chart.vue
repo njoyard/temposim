@@ -1,0 +1,153 @@
+<script setup lang="ts">
+import {
+  Chart as ChartJs,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  TimeScale,
+  LinearScale
+} from 'chart.js'
+
+import 'chartjs-adapter-luxon'
+
+import { DateTime } from 'luxon'
+
+import { computed } from 'vue'
+import { Bar } from 'vue-chartjs'
+
+const props = defineProps({
+  series: Object,
+  unit: String,
+  title: String
+})
+
+const font = {
+  size: 10
+}
+
+const formats = {
+  fallback: 'd LLL yyyy TT',
+  month: 'LLLL yyyy',
+  year: 'yyyy'
+}
+
+const colors = {
+  base: '#5214dc',
+  hchp: '#f4b44a',
+  tempo: '#25adde'
+}
+
+ChartJs.register(Title, Tooltip, Legend, BarElement, TimeScale, LinearScale)
+
+const chartOptions = computed(() => {
+  let yBeginAtZero = true,
+    timeUnit = props.unit,
+    ar = 2.5
+
+  let timeFormat = formats[timeUnit as never] || formats.fallback
+
+  return {
+    aspectRatio: ar,
+    animation: false,
+    plugins: {
+      filler: {
+        propagate: true
+      },
+      tooltip: {
+        enabled: true,
+
+        borderColor: 'rgba(127, 127, 127, 0.3)',
+        borderWidth: 1,
+        backgroundColor: 'rgba(35, 35, 35, 0.7)',
+
+        titleColor: '#bbbbbb',
+        titleFont: font,
+
+        bodyFont: Object.assign({ weight: 'bold' }, font),
+        displayColors: false,
+
+        callbacks: {
+          title: ([
+            {
+              raw: { x }
+            }
+          ]) => DateTime.fromMillis(x).setLocale('fr').toFormat(timeFormat),
+          label: ({ raw: { y }, dataset: { label } }) => {
+            if (y === null) return null
+
+            let itemLabel = `${Math.round(y * 100) / 100} €`
+
+            if (label) {
+              itemLabel = `${label}: ${itemLabel}`
+            }
+
+            return itemLabel
+          }
+        }
+      }
+    },
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    responsive: true,
+    scales: {
+      x: {
+        type: 'time',
+        drawTicks: false,
+        border: {
+          display: false
+        },
+        grid: {
+          display: false
+        },
+        ticks: {
+          autoSkipPadding: 10,
+          font,
+          maxRotation: 0
+        },
+        time: { unit: timeUnit }
+      },
+      y: {
+        beginAtZero: yBeginAtZero,
+        border: {
+          display: false
+        },
+        grid: {
+          color: 'rgba(127, 127, 127, 0.3)',
+          drawTicks: false
+        },
+        ticks: {
+          font
+        }
+      }
+    }
+  }
+})
+
+const chartData = computed(() => {
+  let datasets = []
+
+  for (let key of Object.keys(colors)) {
+    datasets.push({
+      label: key,
+      parsing: false,
+      data: props.series[key].map((p) => ({ x: p.ts, y: p.value })),
+      backgroundColor: colors[key]
+    })
+  }
+
+  return { datasets }
+})
+</script>
+
+<template>
+  <v-card class="my-8">
+    <v-card-title>{{ title }}</v-card-title>
+    <v-card-text>
+      <Bar :data="chartData" :options="chartOptions" />
+    </v-card-text>
+  </v-card>
+</template>
