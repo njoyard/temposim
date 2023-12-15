@@ -38,6 +38,12 @@ const colors = {
   tempo: '#25adde'
 }
 
+const labels = {
+  base: 'Option Base',
+  hchp: 'Option Heures Creuses',
+  tempo: 'Option Tempo'
+}
+
 ChartJs.register(Title, Tooltip, Legend, BarElement, TimeScale, LinearScale)
 
 const chartOptions = computed(() => {
@@ -53,6 +59,9 @@ const chartOptions = computed(() => {
     plugins: {
       filler: {
         propagate: true
+      },
+      legend: {
+        position: 'bottom'
       },
       tooltip: {
         enabled: true,
@@ -131,8 +140,10 @@ const chartData = computed(() => {
   let datasets = []
 
   for (let key of Object.keys(colors)) {
+    if (!props.series || !props.series[key]) continue
+
     datasets.push({
-      label: key,
+      label: labels[key],
       parsing: false,
       data: props.series[key].map((p) => ({ x: p.ts, y: p.value })),
       backgroundColor: colors[key]
