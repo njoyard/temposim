@@ -18,6 +18,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.2.1
+
+Très légers changements cosmétiques.
+
 ### Version 0.2.0
 
 - Ajout du réglage des heures creuses
@@ -25,7 +29,7 @@ l'URL http://localhost:4173/.
 
 ### Version 0.1.0
 
-Première version publiée
+Première version publiée.
 
 ## Licence et crédits
 
