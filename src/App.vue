@@ -3,11 +3,12 @@ import { Ref, ref } from 'vue'
 
 import Chart from './components/Chart.vue'
 import Upload from './components/Upload.vue'
+import { SeriesSet } from './utils/calcul'
 
 const monthSeries: Ref<null | object> = ref(null)
 const yearSeries: Ref<null | object> = ref(null)
 
-const updateSeries = (data) => {
+const updateSeries = (data: SeriesSet) => {
   monthSeries.value = data && data.month
   yearSeries.value = data && data.year
 }
@@ -74,7 +75,7 @@ const updateSeries = (data) => {
           :series="yearSeries"
         />
 
-        <div class="text-center">
+        <div class="text-center my-8">
           <a href="https://github.com/njoyard/temposim" target="_blank">
             <v-icon icon="fas fa-github" /> Code source
           </a>

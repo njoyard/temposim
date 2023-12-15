@@ -28,10 +28,7 @@ const handleFile = async (files: File[]) => {
     loading.value = 'Génération des séries de données'
     await new Promise((r) => setTimeout(r, 0))
 
-    emit('seriesReady', {
-      month: genererSeries(tarifs, 'month'),
-      year: genererSeries(tarifs, 'year')
-    })
+    emit('seriesReady', genererSeries(tarifs))
   } catch (e) {
     emit('seriesReady', null)
     error.value = (e as Error).message

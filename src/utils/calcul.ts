@@ -59,13 +59,12 @@ export function calculerTarifs(
   return out
 }
 
-const seriesDefs: { [key: string]: (entry: TarifEntry) => number } = {
+export type SeriesDefs = { [key: string]: (entry: TarifEntry) => number }
+
+const seriesDefs: SeriesDefs = {
   base: (entry: TarifEntry) => entry.coutBase,
   hchp: (entry: TarifEntry) => entry.coutHCHP,
-  tempo: (entry: TarifEntry) => entry.coutTempo,
-  bleu: (entry: TarifEntry) => (entry.couleur === 1 ? entry.coutTempo : 0),
-  blanc: (entry: TarifEntry) => (entry.couleur === 2 ? entry.coutTempo : 0),
-  rouge: (entry: TarifEntry) => (entry.couleur === 3 ? entry.coutTempo : 0)
+  tempo: (entry: TarifEntry) => entry.coutTempo
 }
 
 export type Point = {
@@ -73,7 +72,16 @@ export type Point = {
   value: number
 }
 
-export function genererSeries(entries: TarifEntry[], unit: 'month' | 'year') {
+export type SeriesSurDuree = {
+  [key: keyof SeriesDefs]: Point[]
+}
+
+export type SeriesUnit = 'month' | 'year'
+
+function genererSeriesSurDuree(
+  entries: TarifEntry[],
+  unit: SeriesUnit
+): SeriesSurDuree {
   let seriesKeys = Object.keys(seriesDefs)
   let series: { [key: string]: Point[] } = {}
   let cur: { [key: string]: Point } = {}
@@ -101,4 +109,16 @@ export function genererSeries(entries: TarifEntry[], unit: 'month' | 'year') {
   }
 
   return series
+}
+
+export type SeriesSet = {
+  month: SeriesSurDuree
+  year: SeriesSurDuree
+}
+
+export function genererSeries(entries: TarifEntry[]): SeriesSet {
+  return {
+    month: genererSeriesSurDuree(entries, 'month'),
+    year: genererSeriesSurDuree(entries, 'year')
+  }
 }
