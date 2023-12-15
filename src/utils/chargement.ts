@@ -1,20 +1,31 @@
 import { DateTime, Duration } from 'luxon'
 
 import { minDate } from './prix'
+import { MesureConsommation } from './types'
 
-type ConsoEntryTemp = {
+export function chargerFichier(fichier: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader()
+
+    reader.addEventListener('error', () => {
+      reject(new Error('Impossible de charger le fichier'))
+    })
+
+    reader.addEventListener('load', async () => {
+      resolve(reader.result as string)
+    })
+
+    reader.readAsText(fichier)
+  })
+}
+
+type MesureConsommationTemp = {
   date: DateTime
   duree?: Duration
   puissance: number
 }
 
-export type ConsoEntry = {
-  date: DateTime
-  duree: Duration
-  puissance: number
-}
-
-export default function parseConsoCSV(csv: string): ConsoEntry[] {
+export function analyseCSV(csv: string): MesureConsommation[] {
   let [metaHeader, metaData, , ...data] = csv
     .split('\n')
     .filter(Boolean)
@@ -26,7 +37,7 @@ export default function parseConsoCSV(csv: string): ConsoEntry[] {
     throw new Error(`Type de fichier incorrect`)
   }
 
-  let entries: ConsoEntryTemp[] = []
+  let entries: MesureConsommationTemp[] = []
 
   for (let [horodate, valeur] of data) {
     let date = DateTime.fromISO(horodate)
@@ -40,6 +51,8 @@ export default function parseConsoCSV(csv: string): ConsoEntry[] {
     }
 
     entries.push({ date, puissance })
+
+    // TODO les plages de mesures FINISSENT à l'horodate du CSV !!!
   }
 
   // Supprimer les entrées pour lesquelles on n'a pas de prix ou de durée
@@ -49,5 +62,5 @@ export default function parseConsoCSV(csv: string): ConsoEntry[] {
     throw new Error('Aucune donnée utilisable dans le fichier chargé')
   }
 
-  return entries as ConsoEntry[]
+  return entries as MesureConsommation[]
 }

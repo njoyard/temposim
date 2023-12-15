@@ -44,6 +44,7 @@ const isVisible = computed({
             class="elevation-10 my-8"
             src="../assets/enedis/gerer-acces-donnees-menu.png"
           />
+          <v-icon icon="fas fa-arrow-right" class="mx-8" size="x-large" />
           <img
             class="elevation-10 my-8"
             src="../assets/enedis/gerer-acces-donnees-parametres.png"
@@ -61,6 +62,7 @@ const isVisible = computed({
             class="elevation-10 my-8"
             src="../assets/enedis/suivre-mesures-menu.png"
           />
+          <v-icon icon="fas fa-arrow-right" class="mx-8" size="x-large" />
           <img
             class="elevation-10 my-8"
             src="../assets/enedis/suivre-mesures-telecharger.png"
@@ -112,7 +114,7 @@ const isVisible = computed({
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
 }
 

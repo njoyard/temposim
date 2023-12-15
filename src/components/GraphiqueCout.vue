@@ -18,14 +18,16 @@ import 'chartjs-adapter-luxon'
 import { DateTime } from 'luxon'
 
 import { computed, ComputedRef } from 'vue'
-import { Bar } from 'vue-chartjs'
-import { SeriesDefs, Point } from '../utils/calcul'
 
-const props = defineProps({
-  series: Object,
-  unit: String,
-  title: String
-})
+import { Bar } from 'vue-chartjs'
+import { Donnees, Option, Unite } from '../utils/types'
+
+ChartJs.register(Title, Tooltip, Legend, BarElement, TimeScale, LinearScale)
+
+const props = defineProps<{
+  unite: Unite
+  data: Donnees
+}>()
 
 const font: Partial<FontSpec> = {
   family: 'CooperHewittBook',
@@ -33,36 +35,33 @@ const font: Partial<FontSpec> = {
 }
 
 const formats = {
-  fallback: 'd LLL yyyy TT',
   month: 'LLLL yyyy',
   year: 'yyyy'
 }
 
-const colors: { [key: keyof SeriesDefs]: string } = {
-  base: '#5214dc',
-  hchp: '#f4b44a',
-  tempo: '#25adde'
+type OptionParams = {
+  option: Option
+  color: string
+  label: string
 }
 
-const labels: { [key: keyof SeriesDefs]: string } = {
-  base: 'Option Base',
-  hchp: 'Option Heures Creuses',
-  tempo: 'Option Tempo'
-}
+const options: OptionParams[] = [
+  { option: 'base', color: '#5214dc', label: 'Option Base' },
+  { option: 'hchp', color: '#f4b44a', label: 'Option Heures Creuses' },
+  { option: 'tempo', color: '#25adde', label: 'Option Tempo' }
+]
 
 type RawPoint = {
   x: number
   y: number
 }
 
-ChartJs.register(Title, Tooltip, Legend, BarElement, TimeScale, LinearScale)
-
 const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
   let yBeginAtZero = true,
-    timeUnit = (props.unit || false) as 'year' | 'month' | false,
-    ar = 2.5
+    timeUnit = props.unite,
+    ar = 3
 
-  let timeFormat = formats[timeUnit as never] || formats.fallback
+  let timeFormat = formats[timeUnit]
 
   let options: ChartOptions<'bar'> = {
     aspectRatio: ar,
@@ -162,17 +161,24 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
 const chartData: ComputedRef<ChartData<'bar'>> = computed(() => {
   let datasets: ChartDataset<'bar'>[] = []
 
-  for (let key of Object.keys(colors)) {
-    if (!props.series || !props.series[key]) continue
+  let jeu = props.data.donneesGraphique.find((jeu) => jeu.unite === props.unite)
+  if (jeu) {
+    for (let { option, color, label } of options) {
+      let serie = jeu.series.find((s) => s.option === option)
 
-    let dataset: ChartDataset<'bar'> = {
-      label: labels[key],
-      parsing: false,
-      data: props.series[key].map((p: Point) => ({ x: p.ts, y: p.value })),
-      backgroundColor: colors[key]
+      if (serie) {
+        // Forçage du type - les points {x,y} sont pas autorisés par le type system dans les barchart
+        // mais l'API chartjs les autorise
+        let dataset = {
+          label,
+          parsing: false,
+          backgroundColor: color,
+          data: serie.points.map((p) => ({ x: p.ts, y: p.valeur }))
+        } as unknown as ChartDataset<'bar'>
+
+        datasets.push(dataset)
+      }
     }
-
-    datasets.push(dataset)
   }
 
   return { datasets }
@@ -180,10 +186,5 @@ const chartData: ComputedRef<ChartData<'bar'>> = computed(() => {
 </script>
 
 <template>
-  <v-card class="my-8">
-    <v-card-title>{{ title }}</v-card-title>
-    <v-card-text>
-      <Bar :data="chartData" :options="chartOptions" />
-    </v-card-text>
-  </v-card>
+  <Bar :data="chartData" :options="chartOptions" />
 </template>

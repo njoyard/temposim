@@ -1,21 +1,9 @@
 import { DateTime } from 'luxon'
 
-type TarifTempo = {
-  hp: number
-  hc: number
-}
+import PlageHeuresCreuses from './plage-hc'
+import { PeriodeTarifaire } from './types'
 
-export type Periode = {
-  debut: string
-  base: number
-  hp: number
-  hc: number
-  tempo: TarifTempo[]
-}
-
-// Tarifs récupérés depuis ce PDF (et ses versions historiques sur archive.org) :
-// https://particulier.edf.fr/content/dam/2-Actifs/Documents/Offres/Grille_prix_Tarif_Bleu.pdf
-export const periodes: Periode[] = [
+export const periodes: PeriodeTarifaire[] = [
   {
     debut: '2022-02-01T00:00:00+01:00',
 
@@ -74,7 +62,7 @@ export const periodes: Periode[] = [
   }
 ]
 
-export const hpTempo = [6, 22]
+export const hcTempo = new PlageHeuresCreuses(22, 6)
 
 export const minDate = DateTime.fromMillis(
   Math.min(...periodes.map((p) => DateTime.fromISO(p.debut).toMillis()))

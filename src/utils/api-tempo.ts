@@ -1,14 +1,10 @@
 import { DateTime } from 'luxon'
+import { JourTempo } from './types'
 
 type JourTempoAPI = {
   dateJour: string
   codeJour: number
   periode: string
-}
-
-export type JourTempo = {
-  date: DateTime
-  couleur: number
 }
 
 type PeriodesTempo = {

@@ -1,16 +1,39 @@
 <script setup lang="ts">
 import { Ref, ref } from 'vue'
 
-import Chart from './components/Chart.vue'
-import Upload from './components/Upload.vue'
-import { SeriesSet } from './utils/calcul'
+import Form from './components/Form.vue'
+import GraphiqueCout from './components/GraphiqueCout.vue'
 
-const monthSeries: Ref<null | object> = ref(null)
-const yearSeries: Ref<null | object> = ref(null)
+import genererDonnees from './utils/generation'
+import { FormInput, Donnees, Unite } from './utils/types'
 
-const updateSeries = (data: SeriesSet) => {
-  monthSeries.value = data && data.month
-  yearSeries.value = data && data.year
+const version = import.meta.env.APP_VERSION
+
+const loadingState: Ref<string | null> = ref(null)
+const errorMessage: Ref<string | null> = ref(null)
+
+const data: Ref<Donnees | null> = ref(null)
+
+const unite: Ref<Unite> = ref('month')
+
+const majDonnees = async (input?: FormInput) => {
+  loadingState.value = errorMessage.value = null
+
+  if (input) {
+    try {
+      data.value = await genererDonnees(
+        input,
+        data.value,
+        (msg) => (loadingState.value = msg)
+      )
+
+      loadingState.value = null
+    } catch (e) {
+      errorMessage.value = (e as Error).message
+    }
+  } else {
+    data.value = null
+  }
 }
 </script>
 
@@ -32,7 +55,7 @@ const updateSeries = (data: SeriesSet) => {
               ce soit d'autre que le calcul des coûts. Tout s'exécute dans votre
               navigateur, sur votre ordinateur.
             </p>
-            <p class="mt-4">
+            <p class="mt-4 text-medium-emphasis">
               Attention: le coût de l'abonnement n'est pas inclus dans cette
               simulation (puisqu'il dépend de la puissance souscrite). Par
               ailleurs, seules les consommations depuis le 1er février 2022
@@ -59,25 +82,61 @@ const updateSeries = (data: SeriesSet) => {
           </v-card-text>
         </v-card>
 
-        <Upload @series-ready="updateSeries" />
+        <v-card class="my-8">
+          <v-card-text>
+            <Form @change="majDonnees" />
 
-        <Chart
-          v-if="monthSeries"
-          title="Coût mensuel TTC hors abonnement"
-          unit="month"
-          :series="monthSeries"
-        />
+            <v-alert
+              v-if="loadingState"
+              type="info"
+              variant="tonal"
+              class="mt-4"
+            >
+              <template v-slot:prepend>
+                <v-progress-circular indeterminate />
+              </template>
 
-        <Chart
-          v-if="yearSeries"
-          title="Coût annuel TTC hors abonnement"
-          unit="year"
-          :series="yearSeries"
-        />
+              {{ loadingState }}
+            </v-alert>
 
-        <div class="text-center my-8">
+            <v-alert
+              v-if="errorMessage"
+              type="error"
+              variant="tonal"
+              class="mt-4"
+            >
+              {{ errorMessage }}
+            </v-alert>
+          </v-card-text>
+        </v-card>
+
+        <v-card v-if="data" class="my-8">
+          <v-toolbar color="white">
+            <v-toolbar-title>
+              Coût {{ unite === 'month' ? 'mensuel' : 'annuel' }} TTC, hors
+              abonnement
+            </v-toolbar-title>
+
+            <v-btn-toggle
+              v-model="unite"
+              class="mr-4"
+              variant="outlined"
+              density="compact"
+            >
+              <v-btn size="x-small" value="month">Mensuel</v-btn>
+              <v-btn size="x-small" value="year">Annuel</v-btn>
+            </v-btn-toggle>
+          </v-toolbar>
+
+          <v-card-text>
+            <GraphiqueCout :unite="unite" :data="data" />
+          </v-card-text>
+        </v-card>
+
+        <div class="text-center my-8 text-disabled">
+          Version {{ version }} &bull;
           <a href="https://github.com/njoyard/temposim" target="_blank">
-            <v-icon icon="fas fa-github" /> Code source
+            <v-icon icon="fas fa-code-fork" size="x-small" /> Code source
           </a>
         </div>
       </v-container>

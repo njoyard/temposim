@@ -7,7 +7,7 @@ Creuses et Tempo).
 L'application ne télécharge aucune donnée et ne dépose aucun cookie. Tout
 s'exécute dans votre navigateur.
 
-TempoSim est disponible en ligne ici: https://njoyard.github.io/temposim
+TempoSim est disponible en ligne ici: https://temposim.njoyard.fr.
 
 ## Utilisation locale
 
@@ -15,6 +15,17 @@ Prérequis: Node 20, yarn.
 
 Cloner le dépôt et exécuter `yarn preview`. L'application est accessible à
 l'URL http://localhost:4173/.
+
+## Historique
+
+### Version 0.2.0
+
+- Ajout du réglage des heures creuses
+- Fusion des deux graphiques mensuel/annuel en un seul
+
+### Version 0.1.0
+
+Première version publiée
 
 ## Licence et crédits
 

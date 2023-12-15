@@ -14,3 +14,12 @@ $title-font: 'CooperHewittBook';
 .text-h6 {
   font-family: $title-font, sans-serif !important;
 }
+
+a {
+  color: #25adde;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
