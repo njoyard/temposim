@@ -1,4 +1,4 @@
-import { DateTime, Duration } from 'luxon'
+import { DateTime } from 'luxon'
 
 import { minDate } from './prix'
 import { MesureConsommation } from './types'
