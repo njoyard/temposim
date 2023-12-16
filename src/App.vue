@@ -122,6 +122,7 @@ const majDonnees = async (input?: FormInput) => {
                 class="mr-4"
                 variant="outlined"
                 density="compact"
+                mandatory
               >
                 <v-btn size="x-small" value="month">Cumul mensuel</v-btn>
                 <v-btn size="x-small" value="year">Cumul annuel</v-btn>
