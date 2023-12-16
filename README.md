@@ -20,6 +20,12 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.3.0
+
+- Ajout d'un graphique de consommation
+- Option de séparation des tarifs suivant les HC/HP et la couleur du jour
+- Correction des calculs (les mesures Enedis indiquent la FIN de la plage, pas le début)
+
 ### Version 0.2.2
 
 Modification des couleurs.

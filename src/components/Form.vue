@@ -65,7 +65,7 @@ watchEffect(() => {
       >comment faire ?</a
     >) puis importez le fichier ci-dessous. Assurez-vous d'avoir fait l'analyse
     sur une portion significative de l'année (au moins 6 mois dont la moitié de
-    l'hiver et la moitié de l'été) avant de prendre toute décision !
+    l'hiver et la moitié de l'été) pour avoir une estimation correcte.
   </p>
 
   <v-file-input
@@ -80,17 +80,7 @@ watchEffect(() => {
   <h4 class="my-2">Plages d'heures creuses</h4>
 
   <p class="my-4">Spécifiez ci-dessous votre ou vos plages d'heures creuses.</p>
-  <p class="my-4">
-    Si vous n'avez pas souscrit l'option Heures Creuses, il n'est
-    malheureusement pas possible de savoir quelles plages vous auriez, même en
-    demandant à vos voisins. Le gestionnaire de réseau vous attribe les plages
-    d'heures creuses en fonction des besoins du réseau, et il n'est pas possible
-    de les choisir ni de les modifier. Vous pouvez vous référer aux
-    <a href="https://www.comparawatt.fr/heures-creuses/" target="_blank"
-      >plages d'heures creuses chez Comparawatt</a
-    >
-    pour vous faire une idée.
-  </p>
+
   <p class="my-4 text-medium-emphasis">
     Note : ces plages ne s'appliquent qu'à l'option Heures Creuses. L'option
     Tempo a une plage fixe (de 22h à 6h).
@@ -139,7 +129,7 @@ watchEffect(() => {
     </v-tooltip>
   </div>
 
-  <v-alert v-if="duree !== 8" type="warning" variant="tonal" class="mt-4">
+  <v-alert v-if="duree !== 8" type="warning" variant="tonal" class="my-4">
     <span v-if="isNaN(duree)">
       Les plages d'heures creuses sont incorrectes.
     </span>
@@ -148,6 +138,18 @@ watchEffect(() => {
       normalement toujours 8.
     </span>
   </v-alert>
+
+  <p class="mt-4">
+    Si vous n'avez pas souscrit l'option Heures Creuses, il n'est
+    malheureusement pas possible de savoir quelles plages vous auriez, même en
+    demandant à vos voisins. Le gestionnaire de réseau vous attribe les plages
+    d'heures creuses en fonction des besoins du réseau, et il n'est pas possible
+    de les choisir ni de les modifier. Vous pouvez vous référer aux
+    <a href="https://www.comparawatt.fr/heures-creuses/" target="_blank"
+      >plages d'heures creuses chez Comparawatt</a
+    >
+    pour vous faire une idée des plages possibles dans votre région.
+  </p>
 
   <Help v-model="afficherAide" />
 </template>

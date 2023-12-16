@@ -2,37 +2,41 @@
 import { Ref, ref } from 'vue'
 
 import Form from './components/Form.vue'
-import GraphiqueCout from './components/GraphiqueCout.vue'
+import Graphique from './components/Graphique.vue'
 
+import couleurs from './utils/couleurs'
 import genererDonnees from './utils/generation'
-import { FormInput, Donnees, Unite } from './utils/types'
+import { FormInput, Donnees, Pas } from './utils/types'
 
 const version = import.meta.env.APP_VERSION
 
 const loadingState: Ref<string | null> = ref(null)
 const errorMessage: Ref<string | null> = ref(null)
 
-const data: Ref<Donnees | null> = ref(null)
+const donnees: Ref<Donnees | null> = ref(null)
 
-const unite: Ref<Unite> = ref('month')
+const pas: Ref<Pas> = ref('month')
+
+const separer: Ref<boolean> = ref(false)
 
 const majDonnees = async (input?: FormInput) => {
   loadingState.value = errorMessage.value = null
 
   if (input) {
     try {
-      data.value = await genererDonnees(
+      donnees.value = await genererDonnees(
         input,
-        data.value,
+        donnees.value,
         (msg) => (loadingState.value = msg)
       )
 
       loadingState.value = null
     } catch (e) {
+      console.error(e)
       errorMessage.value = (e as Error).message
     }
   } else {
-    data.value = null
+    donnees.value = null
   }
 }
 </script>
@@ -47,8 +51,8 @@ const majDonnees = async (input?: FormInput) => {
             <p>
               Cette application permet de simuler, à partir de vos données de
               consommation Enedis, le coût de votre consommation électrique
-              suivant les 3 options du Tarif Bleu EDF : Base, Heures Creuses et
-              Tempo.
+              passée suivant les 3 options du Tarif Bleu EDF : Base, Heures
+              Creuses et Tempo.
             </p>
             <p class="mt-4">
               Vos données ne seront ni téléchargées ni utilisées pour quoi que
@@ -82,7 +86,7 @@ const majDonnees = async (input?: FormInput) => {
           </v-card-text>
         </v-card>
 
-        <v-card class="my-8">
+        <v-card class="my-4">
           <v-card-text>
             <Form @change="majDonnees" />
 
@@ -110,30 +114,62 @@ const majDonnees = async (input?: FormInput) => {
           </v-card-text>
         </v-card>
 
-        <v-card v-if="data" class="my-8">
-          <v-toolbar color="white">
-            <v-toolbar-title>
-              Coût {{ unite === 'month' ? 'mensuel' : 'annuel' }} TTC, hors
-              abonnement
-            </v-toolbar-title>
-
-            <v-btn-toggle
-              v-model="unite"
-              class="mr-4"
-              variant="outlined"
-              density="compact"
-            >
-              <v-btn size="x-small" value="month">Mensuel</v-btn>
-              <v-btn size="x-small" value="year">Annuel</v-btn>
-            </v-btn-toggle>
-          </v-toolbar>
-
+        <v-card v-if="donnees" class="my-4">
           <v-card-text>
-            <GraphiqueCout :unite="unite" :data="data" />
+            <div class="d-flex flex-row justify-space-around align-center">
+              <v-btn-toggle
+                v-model="pas"
+                class="mr-4"
+                variant="outlined"
+                density="compact"
+              >
+                <v-btn size="x-small" value="month">Cumul mensuel</v-btn>
+                <v-btn size="x-small" value="year">Cumul annuel</v-btn>
+              </v-btn-toggle>
+
+              <v-switch
+                v-model="separer"
+                label="Séparer les tarifs"
+                :color="couleurs.bleu"
+                density="compact"
+                hide-details="auto"
+              />
+            </div>
           </v-card-text>
         </v-card>
 
-        <div class="text-center my-8 text-disabled">
+        <v-card v-if="donnees" class="my-4">
+          <v-card-title>
+            Coût {{ pas === 'month' ? 'mensuel' : 'annuel' }} TTC, hors
+            abonnement
+          </v-card-title>
+
+          <v-card-text>
+            <Graphique
+              :pas="pas"
+              :separer="separer"
+              :donnees="donnees"
+              type="cout"
+            />
+          </v-card-text>
+        </v-card>
+
+        <v-card v-if="donnees" class="my-4">
+          <v-card-title>
+            Consommation {{ pas === 'month' ? 'mensuelle' : 'annuelle' }}
+          </v-card-title>
+
+          <v-card-text>
+            <Graphique
+              :pas="pas"
+              :separer="separer"
+              :donnees="donnees"
+              type="conso"
+            />
+          </v-card-text>
+        </v-card>
+
+        <div class="text-center my-4 text-disabled">
           Version {{ version }} &bull;
           <a href="https://github.com/njoyard/temposim" target="_blank">
             <v-icon icon="fas fa-code-fork" size="x-small" /> Code source

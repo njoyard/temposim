@@ -7,7 +7,7 @@ import {
   JourTempo,
   JeuDonnees,
   MesureConsommation,
-  Unite
+  Pas
 } from './types'
 
 let yieldToUI = (): Promise<void> => new Promise((r) => setTimeout(r, 0))
@@ -50,12 +50,12 @@ export default async function genererDonnees(
 
   let donneesGraphique: JeuDonnees[] = []
 
-  for (let unite of ['month', 'year'] as Unite[]) {
+  for (let pas of ['month', 'year'] as Pas[]) {
     await yieldToUI()
 
     donneesGraphique.push({
-      unite,
-      series: genererSeries(cout, unite)
+      pas,
+      series: genererSeries(cout, pas)
     })
   }
 

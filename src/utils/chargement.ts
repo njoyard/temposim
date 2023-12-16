@@ -19,12 +19,6 @@ export function chargerFichier(fichier: File): Promise<string> {
   })
 }
 
-type MesureConsommationTemp = {
-  date: DateTime
-  duree?: Duration
-  puissance: number
-}
-
 export function analyseCSV(csv: string): MesureConsommation[] {
   let [metaHeader, metaData, , ...data] = csv
     .split('\n')
@@ -37,30 +31,31 @@ export function analyseCSV(csv: string): MesureConsommation[] {
     throw new Error(`Type de fichier incorrect`)
   }
 
-  let entries: MesureConsommationTemp[] = []
+  let entries: MesureConsommation[] = []
+  let prev: DateTime | null = null
 
   for (let [horodate, valeur] of data) {
     let date = DateTime.fromISO(horodate)
-    let puissance = Number(valeur)
+    if (!date.isValid) continue
 
-    if (!date.isValid || isNaN(puissance)) continue
-
-    if (entries.length) {
-      let prev = entries[entries.length - 1]
-      prev.duree = date.diff(prev.date)
+    if (prev === null) {
+      // On ne stocke pas la première mesure (durée inconnue)
+      prev = date
+      continue
     }
 
-    entries.push({ date, puissance })
+    let puissance = Number(valeur)
+    if (isNaN(puissance)) continue
 
-    // TODO les plages de mesures FINISSENT à l'horodate du CSV !!!
+    entries.push({ date, puissance, duree: date.diff(prev) })
   }
 
-  // Supprimer les entrées pour lesquelles on n'a pas de prix ou de durée
-  entries = entries.filter((e) => e.duree && e.date >= minDate)
+  // Supprimer les entrées pour lesquelles on n'a pas de prix
+  entries = entries.filter((e) => e.date >= minDate)
 
   if (!entries.length) {
     throw new Error('Aucune donnée utilisable dans le fichier chargé')
   }
 
-  return entries as MesureConsommation[]
+  return entries
 }

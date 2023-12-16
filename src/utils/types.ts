@@ -29,13 +29,29 @@ export type JourTempo = {
   couleur: number
 }
 
+export type Option =
+  | 'base'
+  | 'hchp'
+  | 'hp'
+  | 'hc'
+  | 'tempo'
+  | 'hpbleu'
+  | 'hcbleu'
+  | 'hpblanc'
+  | 'hcblanc'
+  | 'hprouge'
+  | 'hcrouge'
+
+export type ConsoKey = `conso_${Option}`
+export type CoutKey = `cout_${Option}`
+
 export type MesureCout = {
   date: DateTime
-  kwh: number
   couleur: number
-  base: number
-  hchp: number
-  tempo: number
+} & {
+  [key in ConsoKey]: number
+} & {
+  [key in CoutKey]: number
 }
 
 export type Point = {
@@ -43,17 +59,18 @@ export type Point = {
   valeur: number
 }
 
-export type Option = 'base' | 'hchp' | 'tempo'
+export type TypeSerie = 'conso' | 'cout'
 
 export type Serie = {
   option: Option
+  type: TypeSerie
   points: Point[]
 }
 
-export type Unite = 'month' | 'year'
+export type Pas = 'month' | 'year'
 
 export type JeuDonnees = {
-  unite: Unite
+  pas: Pas
   series: Serie[]
 }
 
