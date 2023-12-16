@@ -20,6 +20,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.3.1
+
+Correction d'une erreur de calcul des durées.
+
 ### Version 0.3.0
 
 - Ajout d'un graphique de consommation

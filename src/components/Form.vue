@@ -74,6 +74,7 @@ watchEffect(() => {
     accept="text/csv"
     show-size
     label="Fichier de consommation CSV (Enedis_Conso_Heure_xxx.csv)"
+    hide-details="auto"
     @update:modelValue="handleFile"
   ></v-file-input>
 

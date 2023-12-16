@@ -244,7 +244,7 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
           display: false
         },
         grid: {
-          color: 'rgba(127, 127, 127, 0.3)',
+          color: couleurs.grisClair,
           drawTicks: false
         },
         ticks: {
@@ -276,17 +276,18 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
       tooltip: {
         enabled: true,
 
-        borderColor: 'rgba(127, 127, 127, 0.3)',
+        borderColor: couleurs.grisClair,
         borderWidth: 1,
-        backgroundColor: 'rgba(35, 35, 35, 0.7)',
+        backgroundColor: couleurs.grisFonce,
 
-        titleColor: '#bbbbbb',
+        titleColor: couleurs.grisClair,
         titleFont: font,
 
         bodyFont: {
           weight: 'bold',
           ...font
         },
+
         displayColors: false,
 
         callbacks: {

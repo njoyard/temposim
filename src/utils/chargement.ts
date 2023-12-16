@@ -48,6 +48,7 @@ export function analyseCSV(csv: string): MesureConsommation[] {
     if (isNaN(puissance)) continue
 
     entries.push({ date, puissance, duree: date.diff(prev) })
+    prev = date
   }
 
   // Supprimer les entrées pour lesquelles on n'a pas de prix
