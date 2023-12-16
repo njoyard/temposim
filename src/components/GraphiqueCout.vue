@@ -20,6 +20,7 @@ import { DateTime } from 'luxon'
 import { computed, ComputedRef } from 'vue'
 
 import { Bar } from 'vue-chartjs'
+import couleurs from '../utils/couleurs'
 import { Donnees, Option, Unite } from '../utils/types'
 
 ChartJs.register(Title, Tooltip, Legend, BarElement, TimeScale, LinearScale)
@@ -46,9 +47,9 @@ type OptionParams = {
 }
 
 const options: OptionParams[] = [
-  { option: 'base', color: '#5214dc', label: 'Option Base' },
-  { option: 'hchp', color: '#f4b44a', label: 'Option Heures Creuses' },
-  { option: 'tempo', color: '#25adde', label: 'Option Tempo' }
+  { option: 'base', color: couleurs.orange, label: 'Option Base' },
+  { option: 'hchp', color: couleurs.vert, label: 'Option Heures Creuses' },
+  { option: 'tempo', color: couleurs.bleu, label: 'Option Tempo' }
 ]
 
 type RawPoint = {
@@ -167,7 +168,7 @@ const chartData: ComputedRef<ChartData<'bar'>> = computed(() => {
       let serie = jeu.series.find((s) => s.option === option)
 
       if (serie) {
-        // Forçage du type - les points {x,y} sont pas autorisés par le type system dans les barchart
+        // Forçage du type - les points {x,y} sont pas autorisés dans les barchart par les types
         // mais l'API chartjs les autorise
         let dataset = {
           label,

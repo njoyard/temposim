@@ -93,7 +93,7 @@ watchEffect(() => {
   </p>
   <p class="my-4 text-medium-emphasis">
     Note : ces plages ne s'appliquent qu'à l'option Heures Creuses. L'option
-    Tempo a des plages fixes (de 22h à 6h).
+    Tempo a une plage fixe (de 22h à 6h).
   </p>
 
   <div class="d-flex align-center">
@@ -114,22 +114,32 @@ watchEffect(() => {
       />
     </div>
 
-    <v-btn
-      v-if="heuresCreuses.length === 1"
-      icon="fas fa-plus"
-      size="x-small"
-      @click="deuxiemePlage"
-    />
+    <v-tooltip v-if="heuresCreuses.length === 1" text="Ajouter une 2ème plage">
+      <template v-slot:activator="{ props }">
+        <v-btn
+          v-bind="props"
+          icon="fas fa-plus"
+          size="x-small"
+          @click="deuxiemePlage"
+          tooltip="Coucou"
+        />
+      </template>
+    </v-tooltip>
 
-    <v-btn
-      v-if="heuresCreuses.length > 1"
-      icon="fas fa-minus"
-      size="x-small"
-      @click="unePlage"
-    />
+    <v-tooltip v-if="heuresCreuses.length > 1" text="Supprimer la 2ème plage">
+      <template v-slot:activator="{ props }">
+        <v-btn
+          v-bind="props"
+          icon="fas fa-minus"
+          size="x-small"
+          @click="unePlage"
+          tooltip="Coucou"
+        />
+      </template>
+    </v-tooltip>
   </div>
 
-  <v-alert v-if="duree !== 8" type="warning" variant="tonal">
+  <v-alert v-if="duree !== 8" type="warning" variant="tonal" class="mt-4">
     <span v-if="isNaN(duree)">
       Les plages d'heures creuses sont incorrectes.
     </span>

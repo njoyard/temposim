@@ -9,6 +9,8 @@ s'exécute dans votre navigateur.
 
 TempoSim est disponible en ligne ici: https://temposim.njoyard.fr.
 
+![Capture d'écran de l'application](screenshots/mensuel.png)
+
 ## Utilisation locale
 
 Prérequis: Node 20, yarn.
@@ -17,6 +19,10 @@ Cloner le dépôt et exécuter `yarn preview`. L'application est accessible à
 l'URL http://localhost:4173/.
 
 ## Historique
+
+### Version 0.2.2
+
+Modification des couleurs.
 
 ### Version 0.2.1
 
