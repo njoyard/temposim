@@ -1,6 +1,7 @@
 export default {
   bleu: '#77aadd',
   bleuClair: '#99ddff',
+  bleuFonce: '#6087ae',
   gris: '#bbbbbb',
   grisClair: '#dddddd',
   grisFonce: '#444444',
@@ -10,5 +11,5 @@ export default {
   rouge: '#dd8899',
   rose: '#ffaabb',
   vert: '#44bb99',
-  vertClair: '#bbcc33'
+  vertClair: '#66ddbb'
 }

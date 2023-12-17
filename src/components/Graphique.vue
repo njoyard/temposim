@@ -34,7 +34,7 @@ const props = defineProps<{
 
 const font: Partial<FontSpec> = {
   family: 'CooperHewittBook',
-  size: 10
+  size: 12
 }
 
 const formats = {
@@ -62,7 +62,7 @@ const options: ComputedRef<OptionParams[]> = computed(() => {
         {
           option: 'hp',
           stack: 'hchp',
-          color: couleurs.jauneFonce,
+          color: couleurs.vert,
           label: 'Heures Pleines'
         },
         {
@@ -142,7 +142,7 @@ const options: ComputedRef<OptionParams[]> = computed(() => {
         {
           option: 'hp',
           stack: 'hchp',
-          color: couleurs.jauneFonce,
+          color: couleurs.vert,
           label: 'Heures Pleines'
         },
         {
@@ -270,7 +270,8 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
         position: 'bottom',
         labels: {
           boxHeight: 12,
-          boxWidth: 12
+          boxWidth: 12,
+          font
         }
       },
       tooltip: {

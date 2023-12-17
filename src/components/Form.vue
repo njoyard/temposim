@@ -87,47 +87,53 @@ watchEffect(() => {
     Tempo a une plage fixe (de 22h à 6h).
   </p>
 
-  <div class="d-flex align-center">
-    <v-icon icon="fas fa-clock" color="grey-darken-1" class="mr-5" />
-    <div v-for="plage in heuresCreuses" class="d-flex mr-8">
-      <v-text-field
-        label="Début"
-        type="time"
-        v-model="plage.debut"
-        class="mr-2"
-        hide-details="auto"
-      />
-      <v-text-field
-        label="Fin"
-        type="time"
-        v-model="plage.fin"
-        hide-details="auto"
-      />
+  <div class="d-flex align-top">
+    <v-icon icon="fas fa-clock" color="grey-darken-1" class="ml-1 mr-4 mt-4" />
+
+    <div class="d-flex flex-wrap align-center">
+      <div v-for="plage in heuresCreuses" class="d-flex mr-8">
+        <v-text-field
+          label="Début"
+          type="time"
+          v-model="plage.debut"
+          class="mr-2"
+          hide-details="auto"
+        />
+        <v-text-field
+          label="Fin"
+          type="time"
+          v-model="plage.fin"
+          hide-details="auto"
+        />
+      </div>
+
+      <v-tooltip
+        v-if="heuresCreuses.length === 1"
+        text="Ajouter une 2ème plage"
+      >
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            icon="fas fa-plus"
+            size="x-small"
+            @click="deuxiemePlage"
+            tooltip="Coucou"
+          />
+        </template>
+      </v-tooltip>
+
+      <v-tooltip v-if="heuresCreuses.length > 1" text="Supprimer la 2ème plage">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            icon="fas fa-minus"
+            size="x-small"
+            @click="unePlage"
+            tooltip="Coucou"
+          />
+        </template>
+      </v-tooltip>
     </div>
-
-    <v-tooltip v-if="heuresCreuses.length === 1" text="Ajouter une 2ème plage">
-      <template v-slot:activator="{ props }">
-        <v-btn
-          v-bind="props"
-          icon="fas fa-plus"
-          size="x-small"
-          @click="deuxiemePlage"
-          tooltip="Coucou"
-        />
-      </template>
-    </v-tooltip>
-
-    <v-tooltip v-if="heuresCreuses.length > 1" text="Supprimer la 2ème plage">
-      <template v-slot:activator="{ props }">
-        <v-btn
-          v-bind="props"
-          icon="fas fa-minus"
-          size="x-small"
-          @click="unePlage"
-          tooltip="Coucou"
-        />
-      </template>
-    </v-tooltip>
   </div>
 
   <v-alert v-if="duree !== 8" type="warning" variant="tonal" class="my-4">

@@ -131,7 +131,7 @@ const majDonnees = async (input?: FormInput) => {
               <v-switch
                 v-model="separer"
                 label="Séparer les tarifs"
-                :color="couleurs.bleu"
+                :color="couleurs.bleuFonce"
                 density="compact"
                 hide-details="auto"
               />
