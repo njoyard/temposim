@@ -149,7 +149,7 @@ watchEffect(() => {
   <p class="mt-4">
     Si vous n'avez pas souscrit l'option Heures Creuses, il n'est
     malheureusement pas possible de savoir quelles plages vous auriez, même en
-    demandant à vos voisins. Le gestionnaire de réseau vous attribe les plages
+    demandant à vos voisins. Le gestionnaire de réseau vous attribue les plages
     d'heures creuses en fonction des besoins du réseau, et il n'est pas possible
     de les choisir ni de les modifier. Vous pouvez vous référer aux
     <a href="https://www.comparawatt.fr/heures-creuses/" target="_blank"

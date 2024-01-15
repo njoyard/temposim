@@ -20,6 +20,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.3.3
+
+Correction d'une typo.
+
 ### Version 0.3.2
 
 Correction d'un bug sur la bascule année/mois.
