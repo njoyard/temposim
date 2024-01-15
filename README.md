@@ -20,6 +20,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.3.4
+
+Ajout d'une balise meta description.
+
 ### Version 0.3.3
 
 Correction d'une typo.
