@@ -20,6 +20,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.3.6
+
+Correction d'un bug empéchant de charger la police.
+
 ### Version 0.3.5
 
 Mise à jour des tarifs EDF au 1er février 2024.

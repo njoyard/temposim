@@ -117,7 +117,6 @@ watchEffect(() => {
             icon="fas fa-plus"
             size="x-small"
             @click="deuxiemePlage"
-            tooltip="Coucou"
           />
         </template>
       </v-tooltip>
@@ -129,7 +128,6 @@ watchEffect(() => {
             icon="fas fa-minus"
             size="x-small"
             @click="unePlage"
-            tooltip="Coucou"
           />
         </template>
       </v-tooltip>

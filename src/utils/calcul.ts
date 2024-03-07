@@ -15,6 +15,11 @@ import {
   TypeSerie
 } from './types'
 
+const INCONNU = 0
+const BLEU = 1
+const BLANC = 2
+const ROUGE = 3
+
 export function calculerTarifs(
   mesures: MesureConsommation[],
   couleurs: JourTempo[],
@@ -30,7 +35,7 @@ export function calculerTarifs(
       jour = mesure.date.minus({ days: 1 })
     }
     let jourTempo = couleursRestantes.find((j) => j.date.hasSame(jour, 'day'))
-    if (!jourTempo || jourTempo.couleur === 0) continue
+    if (!jourTempo || jourTempo.couleur === INCONNU) continue
 
     // On vire les jours précédents pour accélérer le reste du process
     let index = couleursRestantes.indexOf(jourTempo)
@@ -60,12 +65,14 @@ export function calculerTarifs(
       conso_hchp: conso,
       conso_hc: conso * ratioHC,
       conso_hp: conso * (1 - ratioHC),
-      conso_hcbleu: jourTempo.couleur === 1 ? conso * ratioHCTempo : 0,
-      conso_hpbleu: jourTempo.couleur === 1 ? conso * (1 - ratioHCTempo) : 0,
-      conso_hcblanc: jourTempo.couleur === 2 ? conso * ratioHCTempo : 0,
-      conso_hpblanc: jourTempo.couleur === 2 ? conso * (1 - ratioHCTempo) : 0,
-      conso_hcrouge: jourTempo.couleur === 3 ? conso * ratioHCTempo : 0,
-      conso_hprouge: jourTempo.couleur === 3 ? conso * (1 - ratioHCTempo) : 0,
+      conso_hcbleu: jourTempo.couleur === BLEU ? conso * ratioHCTempo : 0,
+      conso_hpbleu: jourTempo.couleur === BLEU ? conso * (1 - ratioHCTempo) : 0,
+      conso_hcblanc: jourTempo.couleur === BLANC ? conso * ratioHCTempo : 0,
+      conso_hpblanc:
+        jourTempo.couleur === BLANC ? conso * (1 - ratioHCTempo) : 0,
+      conso_hcrouge: jourTempo.couleur === ROUGE ? conso * ratioHCTempo : 0,
+      conso_hprouge:
+        jourTempo.couleur === ROUGE ? conso * (1 - ratioHCTempo) : 0,
       conso_tempo: conso,
       couleur: jourTempo.couleur,
       cout_base: conso * tarif.base,
@@ -76,21 +83,23 @@ export function calculerTarifs(
         conso * ratioHCTempo * tarifTempo.hc +
         conso * (1 - ratioHCTempo) * tarifTempo.hp,
       cout_hcbleu:
-        jourTempo.couleur === 1 ? conso * ratioHCTempo * tarifTempo.hc : 0,
+        jourTempo.couleur === BLEU ? conso * ratioHCTempo * tarifTempo.hc : 0,
       cout_hpbleu:
-        jourTempo.couleur === 1
+        jourTempo.couleur === BLEU
           ? conso * (1 - ratioHCTempo) * tarifTempo.hp
           : 0,
       cout_hcblanc:
-        jourTempo.couleur === 2 ? conso * ratioHCTempo * tarifTempo.hc : 0,
+        jourTempo.couleur === BLANC ? conso * ratioHCTempo * tarifTempo.hc : 0,
       cout_hpblanc:
-        jourTempo.couleur === 2
+        jourTempo.couleur === BLANC
           ? conso * (1 - ratioHCTempo) * tarifTempo.hp
           : 0,
       cout_hcrouge:
-        jourTempo.couleur === 3 ? conso * ratioHCTempo * tarifTempo.hc : 0,
+        jourTempo.couleur === ROUGE ? conso * ratioHCTempo * tarifTempo.hc : 0,
       cout_hprouge:
-        jourTempo.couleur === 3 ? conso * (1 - ratioHCTempo) * tarifTempo.hp : 0
+        jourTempo.couleur === ROUGE
+          ? conso * (1 - ratioHCTempo) * tarifTempo.hp
+          : 0
     })
   }
 
