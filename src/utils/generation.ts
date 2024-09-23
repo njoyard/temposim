@@ -50,7 +50,7 @@ export default async function genererDonnees(
 
   let donneesGraphique: JeuDonnees[] = []
 
-  for (let pas of ['month', 'year'] as Pas[]) {
+  for (let pas of ['month', 'year', 'tempo', 'tarif'] as Pas[]) {
     await yieldToUI()
 
     donneesGraphique.push({

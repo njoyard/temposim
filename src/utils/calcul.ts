@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 
+import { debutPas } from './pas'
 import PlageHeuresCreuses from './plage-hc'
 import { hcTempo, periodes } from './prix'
 import {
@@ -141,7 +142,7 @@ export function genererSeries(mesures: MesureCout[], pas: Pas): Serie[] {
   let curTS = 0
 
   for (let mesure of mesures) {
-    let ts = mesure.date.startOf(pas).toMillis()
+    let ts = debutPas(pas, mesure.date).toMillis()
 
     if (!curTS || curTS !== ts) {
       curTS = ts

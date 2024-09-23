@@ -5,7 +5,7 @@ import {
   Tooltip,
   Legend,
   BarElement,
-  TimeScale,
+  CategoryScale,
   LinearScale,
   ChartData,
   ChartDataset,
@@ -13,17 +13,14 @@ import {
   FontSpec
 } from 'chart.js'
 
-import 'chartjs-adapter-luxon'
-
-import { DateTime } from 'luxon'
-
 import { computed, ComputedRef } from 'vue'
 
 import { Bar } from 'vue-chartjs'
 import couleurs from '../utils/couleurs'
+import { libellePas } from '../utils/pas'
 import { Donnees, Option, TypeSerie, Pas } from '../utils/types'
 
-ChartJs.register(Title, Tooltip, Legend, BarElement, TimeScale, LinearScale)
+ChartJs.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const props = defineProps<{
   pas: Pas
@@ -35,11 +32,6 @@ const props = defineProps<{
 const font: Partial<FontSpec> = {
   family: 'CooperHewittBook',
   size: 12
-}
-
-const formats = {
-  month: 'LLLL yyyy',
-  year: 'yyyy'
 }
 
 type OptionParams = {
@@ -57,7 +49,7 @@ const options: ComputedRef<OptionParams[]> = computed(() => {
           option: 'base',
           stack: 'base',
           color: couleurs.orange,
-          label: 'Total'
+          label: 'Base'
         },
         {
           option: 'hp',
@@ -206,17 +198,9 @@ const unite: ComputedRef<string> = computed(() => {
   return 'kWh'
 })
 
-type RawPoint = {
-  x: number
-  y: number
-}
-
 const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
-  let yBeginAtZero = true,
-    timeUnit = props.pas,
-    ar = 3
-
-  let timeFormat = formats[timeUnit]
+  let yBeginAtZero = true
+  let ar = 3
 
   let options: ChartOptions<'bar'> = {
     aspectRatio: ar,
@@ -224,7 +208,6 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
     responsive: true,
     scales: {
       x: {
-        type: 'time',
         border: {
           display: false
         },
@@ -235,8 +218,7 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
           autoSkipPadding: 10,
           font,
           maxRotation: 0
-        },
-        time: { unit: timeUnit }
+        }
       },
       y: {
         beginAtZero: yBeginAtZero,
@@ -295,15 +277,12 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
           title: (items) => {
             if (items.length) {
               let [item] = items
-
-              return DateTime.fromMillis((item.raw as RawPoint).x)
-                .setLocale('fr')
-                .toFormat(timeFormat)
+              return item.label
             }
           },
 
           label: (item) => {
-            let y = (item.raw as RawPoint).y
+            let y = item.raw as number | null
             let label = item.dataset.label
 
             if (y === null) return
@@ -311,7 +290,7 @@ const chartOptions: ComputedRef<ChartOptions<'bar'>> = computed(() => {
             let itemLabel = `${Math.round(y * 100) / 100} ${unite.value}`
 
             if (label) {
-              itemLabel = `${label}: ${itemLabel}`
+              itemLabel = `${label} : ${itemLabel}`
             }
 
             return itemLabel
@@ -328,6 +307,8 @@ const chartData: ComputedRef<ChartData<'bar'>> = computed(() => {
   let datasets: ChartDataset<'bar'>[] = []
 
   let jeu = props.donnees.donneesGraphique.find((jeu) => jeu.pas === props.pas)
+  let labels: string[] = []
+
   if (jeu) {
     for (let { option, stack, color, label } of options.value) {
       let serie = jeu.series.find(
@@ -335,22 +316,20 @@ const chartData: ComputedRef<ChartData<'bar'>> = computed(() => {
       )
 
       if (serie) {
-        // Forçage du type - les points {x,y} sont pas autorisés dans les barchart par les types
-        // mais l'API chartjs les autorise
         let dataset = {
           label,
-          parsing: false,
           backgroundColor: color,
           stack,
-          data: serie.points.map((p) => ({ x: p.ts, y: p.valeur }))
-        } as unknown as ChartDataset<'bar'>
+          data: serie.points.map((p) => p.valeur)
+        } as ChartDataset<'bar'>
 
+        labels = serie.points.map((p) => libellePas(props.pas, p.ts))
         datasets.push(dataset)
       }
     }
   }
 
-  return { datasets }
+  return { labels, datasets }
 })
 </script>
 

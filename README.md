@@ -20,6 +20,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.3.8
+
+Ajout du regroupement par période tarifaire (février-juillet et aout-janvier) et par année Tempo (septembre-aout).
+
 ### Version 0.3.7
 
 Correction d'un bug qui forçait l'utilisation du tarif le plus ancien pour toutes les mesures.

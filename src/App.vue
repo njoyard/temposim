@@ -6,6 +6,7 @@ import Graphique from './components/Graphique.vue'
 
 import couleurs from './utils/couleurs'
 import genererDonnees from './utils/generation'
+import { adjMasculin, adjFeminin } from './utils/pas'
 import { FormInput, Donnees, Pas } from './utils/types'
 
 const version = import.meta.env.APP_VERSION
@@ -121,15 +122,51 @@ const majDonnees = async (input?: FormInput) => {
         <v-card v-if="donnees" class="my-4">
           <v-card-text>
             <div class="d-flex flex-row justify-space-around align-center">
+              <v-label class="mr-2">Regrouper par</v-label>
               <v-btn-toggle
                 v-model="pas"
-                class="mr-4"
+                class="mr-16"
                 variant="outlined"
                 density="compact"
                 mandatory
               >
-                <v-btn size="x-small" value="month">Cumul mensuel</v-btn>
-                <v-btn size="x-small" value="year">Cumul annuel</v-btn>
+                <v-tooltip text="Du 1er janvier au 31 décembre" location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" size="x-small" value="year"
+                      >Année civile</v-btn
+                    >
+                  </template>
+                </v-tooltip>
+
+                <v-tooltip text="Du 1er septembre au 31 août" location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" size="x-small" value="tempo"
+                      >Année Tempo</v-btn
+                    >
+                  </template>
+                </v-tooltip>
+
+                <v-tooltip
+                  text="Démarre chaque 1er février et 1er août"
+                  location="top"
+                >
+                  <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" size="x-small" value="tarif"
+                      >Période tarifaire</v-btn
+                    >
+                  </template>
+                </v-tooltip>
+
+                <v-tooltip
+                  text="Afficher chaque mois séparément"
+                  location="top"
+                >
+                  <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" size="x-small" value="month"
+                      >Mois</v-btn
+                    >
+                  </template>
+                </v-tooltip>
               </v-btn-toggle>
 
               <v-switch
@@ -145,8 +182,7 @@ const majDonnees = async (input?: FormInput) => {
 
         <v-card v-if="donnees" class="my-4">
           <v-card-title>
-            Coût {{ pas === 'month' ? 'mensuel' : 'annuel' }} TTC, hors
-            abonnement
+            Coût {{ adjMasculin[pas] }} TTC, hors abonnement
           </v-card-title>
 
           <v-card-text>
@@ -160,9 +196,7 @@ const majDonnees = async (input?: FormInput) => {
         </v-card>
 
         <v-card v-if="donnees" class="my-4">
-          <v-card-title>
-            Consommation {{ pas === 'month' ? 'mensuelle' : 'annuelle' }}
-          </v-card-title>
+          <v-card-title> Consommation {{ adjFeminin[pas] }} </v-card-title>
 
           <v-card-text>
             <Graphique

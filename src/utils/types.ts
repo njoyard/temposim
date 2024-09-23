@@ -67,7 +67,7 @@ export type Serie = {
   points: Point[]
 }
 
-export type Pas = 'month' | 'year'
+export type Pas = 'month' | 'year' | 'tempo' | 'tarif'
 
 export type JeuDonnees = {
   pas: Pas
