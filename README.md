@@ -20,6 +20,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.3.7
+
+Correction d'un bug qui forçait l'utilisation du tarif le plus ancien pour toutes les mesures.
+
 ### Version 0.3.6
 
 Correction d'un bug empéchant de charger la police.

@@ -41,7 +41,9 @@ export function calculerTarifs(
     let index = couleursRestantes.indexOf(jourTempo)
     if (index > 0) couleursRestantes.splice(0, index)
 
-    let tarif = periodes.find((p) => DateTime.fromISO(p.debut) < mesure.date)
+    let tarif = periodes
+      .filter((p) => DateTime.fromISO(p.debut) <= mesure.date)
+      .pop()
     if (!tarif) continue
 
     let tarifTempo = tarif.tempo[jourTempo.couleur - 1]
