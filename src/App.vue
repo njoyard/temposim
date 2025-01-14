@@ -87,6 +87,7 @@ const majDonnees = async (input?: FormInput) => {
               <a href="/edf/tarifs-20240201.pdf" target="_blank"
                 >1er février 2024</a
               >
+              &bull; 1er février 2025 (en attente de publication)
             </p>
           </v-card-text>
         </v-card>
