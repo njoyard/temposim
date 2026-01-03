@@ -20,6 +20,13 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.4.0
+
+- Ajout des tarifs 2025
+- Suppression de l'aide au téléchargement ENEDIS (plus possible)
+- Ajout d'instructions pour utiliser un script de téléchargement
+- Compatibilité avec les fichiers générés par https://github.com/njoyard/enedis-download-script/
+
 ### Version 0.3.8
 
 Ajout du regroupement par période tarifaire (février-juillet et aout-janvier) et par année Tempo (septembre-aout).
