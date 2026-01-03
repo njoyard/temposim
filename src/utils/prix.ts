@@ -19,7 +19,7 @@ export const periodes: PeriodeTarifaire[] = [
     ]
   },
   {
-    debut: '2022-08-01T00:00:00+01:00',
+    debut: '2022-08-01T00:00:00+02:00',
 
     base: 0.174,
 
@@ -47,7 +47,7 @@ export const periodes: PeriodeTarifaire[] = [
     ]
   },
   {
-    debut: '2023-08-01T00:00:00+01:00',
+    debut: '2023-08-01T00:00:00+02:00',
 
     base: 0.2276,
 
@@ -86,6 +86,20 @@ export const periodes: PeriodeTarifaire[] = [
       { hc: 0.1166, hp: 0.1448 },
       { hc: 0.1337, hp: 0.1705 },
       { hc: 0.1411, hp: 0.6808 }
+    ]
+  },
+  {
+    debut: '2025-08-01T00:00:00+02:00',
+
+    base: 0.1952,
+
+    hc: 0.1635,
+    hp: 0.2081,
+
+    tempo: [
+      { hc: 0.1232, hp: 0.1494 },
+      { hc: 0.1391, hp: 0.1730 },
+      { hc: 0.1460, hp: 0.6468 }
     ]
   }
 ]
