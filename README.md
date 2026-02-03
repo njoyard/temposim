@@ -20,6 +20,10 @@ l'URL http://localhost:4173/.
 
 ## Historique
 
+### Version 0.4.1
+
+- Ajout des tarifs février 2026
+
 ### Version 0.4.0
 
 - Ajout des tarifs 2025
