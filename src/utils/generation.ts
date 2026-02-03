@@ -44,7 +44,7 @@ export default async function genererDonnees(
   onProgress('Calcul du coût suivant les options tarifaires...')
   await yieldToUI()
 
-  let cout = calculerTarifs(conso, couleurs, input.hc)
+  let cout = calculerTarifs(conso, couleurs, input.hc, input.tarif, input.perso)
 
   onProgress('Génération des séries de données...')
 

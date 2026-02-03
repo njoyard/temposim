@@ -123,3 +123,17 @@ export const hcTempo = new PlageHeuresCreuses(22, 6)
 export const minDate = DateTime.fromMillis(
   Math.min(...periodes.map((p) => DateTime.fromISO(p.debut).toMillis()))
 )
+
+export const lastPeriode = periodes[periodes.length - 1]
+
+export const tarifPerso: PeriodeTarifaire = {
+  debut: '2000-01-01T00:00:00+01:00',
+  base: lastPeriode.base,
+  hc: lastPeriode.hc,
+  hp: lastPeriode.hp,
+  tempo: [
+    { hc: lastPeriode.tempo[0].hc, hp: lastPeriode.tempo[0].hp },
+    { hc: lastPeriode.tempo[1].hc, hp: lastPeriode.tempo[1].hp },
+    { hc: lastPeriode.tempo[2].hc, hp: lastPeriode.tempo[2].hp },
+  ]
+}

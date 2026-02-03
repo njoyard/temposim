@@ -10,7 +10,8 @@ import {
 
 import Help from './Help.vue'
 import PlageHeuresCreuses from '../utils/plage-hc'
-import { FormInput } from '../utils/types'
+import { type FormInput, type PeriodeTarifaire, type TarifCalcul } from '../utils/types'
+import { tarifPerso } from '../utils/prix'
 
 const emit = defineEmits<{
   (e: 'change', data?: FormInput): void
@@ -19,6 +20,10 @@ const emit = defineEmits<{
 const afficherAide: Ref<boolean> = ref(false)
 
 const fichier: Ref<File | null> = ref(null)
+
+const tarif: Ref<TarifCalcul> = ref('edf-historique')
+
+const perso: Ref<PeriodeTarifaire> = ref(tarifPerso)
 
 const heuresCreuses = shallowReactive([
   new PlageHeuresCreuses(2, 7),
@@ -31,6 +36,10 @@ const duree: ComputedRef<number> = computed(() =>
     0
   )
 )
+
+const validation = {
+  nombre: (v: number) => !isNaN(Number(v)) || 'Nombre incorrect'
+}
 
 const deuxiemePlage = () =>
   heuresCreuses.length === 1 && heuresCreuses.push(new PlageHeuresCreuses(0, 0))
@@ -46,8 +55,36 @@ let debounceTimeout = 0
 watchEffect(() => {
   clearTimeout(debounceTimeout)
 
-  if (duree.value === 8 && fichier.value !== null) {
-    let data = { fichier: fichier.value, hc: heuresCreuses }
+  const dureeValide = duree.value === 8
+  const fichierPresent = fichier.value !== null
+  const tarifValide = tarif.value !== 'custom' || [
+    perso.value.base,
+    perso.value.hp,
+    perso.value.hc,
+    ...perso.value.tempo.map(t => t.hc),
+    ...perso.value.tempo.map(t => t.hp),
+  ].every((v) => !isNaN(Number(v)))
+
+  if (dureeValide && fichierPresent && tarifValide) {
+    let data: FormInput = {
+      fichier: fichier.value as File,
+      hc: heuresCreuses,
+      tarif: tarif.value
+    }
+
+    if (tarif.value === 'custom') {
+      data.perso = {
+        debut: perso.value.debut,
+        base: Number(perso.value.base),
+        hc: Number(perso.value.hc),
+        hp: Number(perso.value.hp),
+        tempo: perso.value.tempo.map(t => ({
+          hc: Number(t.hc),
+          hp: Number(t.hp)
+        }))
+      }
+    }
+
     debounceTimeout = setTimeout(() => emit('change', data), debounce)
   } else {
     debounceTimeout = setTimeout(() => emit('change'), debounce)
@@ -77,6 +114,130 @@ watchEffect(() => {
     hide-details="auto"
     @update:modelValue="handleFile"
   ></v-file-input>
+
+  <h4 class="my-2">Tarifs</h4>
+
+  <p class="my-4">
+    <v-btn-toggle
+      v-model="tarif"
+      class="mr-16"
+      variant="outlined"
+      density="compact"
+      mandatory
+    >
+      <v-tooltip text="Tarifs historiques EDF" location="top">
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" size="x-small" value="edf-historique"
+            >Historique EDF</v-btn
+          >
+        </template>
+      </v-tooltip>
+
+      <v-tooltip text="Tarifs actuels EDF" location="top">
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" size="x-small" value="edf-actuel"
+            >Actuel EDF</v-btn
+          >
+        </template>
+      </v-tooltip>
+
+      <!--
+        <v-tooltip text="Tarifs personnalisés" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" size="x-small" value="custom"
+              >Personnalisé</v-btn
+            >
+          </template>
+        </v-tooltip>
+      -->
+
+    </v-btn-toggle>
+  </p>
+
+  <p class="my-4 text-medium-emphasis">
+    <span v-if="tarif === 'edf-historique'">
+      L'historique du tarif bleu EDF sera utilisé pour le calcul&nbsp;: chaque consommation passée utilisera le tarif qui était en vigueur à ce moment.
+    </span>
+
+    <span v-if="tarif === 'edf-actuel'">
+      Le tarif bleu EDF actuel sera utilisé pour toutes les consommation passées.
+    </span>
+
+    <template v-if="tarif === 'custom'">
+      <span>
+        Utiliser les tarifs personnalisés suivants (en €/kWh TTC)&nbsp;:
+      </span>
+      <div>
+        <div class="d-flex">
+          <v-text-field
+            label="Base"
+            v-model="perso.base"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+          <v-text-field
+            label="Heures creuses"
+            v-model="perso.hc"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+          <v-text-field
+            label="Heures pleines"
+            v-model="perso.hp"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            label="HC Bleu"
+            v-model="perso.tempo[0].hc"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+          <v-text-field
+            label="HP Bleu"
+            v-model="perso.tempo[0].hp"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+          <v-text-field
+            label="HC Blanc"
+            v-model="perso.tempo[1].hc"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+          <v-text-field
+            label="HP Blanc"
+            v-model="perso.tempo[1].hp"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+          <v-text-field
+            label="HC Rouge"
+            v-model="perso.tempo[2].hc"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+          <v-text-field
+            label="HP Rouge"
+            v-model="perso.tempo[2].hp"
+            class="mr-2"
+            hide-details="auto"
+            :rules="[validation.nombre]"
+          />
+        </div>
+      </div>
+    </template>
+  </p>
 
   <h4 class="my-2">Plages d'heures creuses</h4>
 

@@ -7,6 +7,8 @@ type Tarif = {
   hc: number
 }
 
+export type TarifCalcul = 'edf-historique' | 'edf-actuel' | 'custom'
+
 export type PeriodeTarifaire = {
   debut: string
   base: number
@@ -16,6 +18,8 @@ export type PeriodeTarifaire = {
 export type FormInput = {
   fichier: File
   hc: PlageHeuresCreuses[]
+  tarif: TarifCalcul
+  perso?: PeriodeTarifaire
 }
 
 export type MesureConsommation = {

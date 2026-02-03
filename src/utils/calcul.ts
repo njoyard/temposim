@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 
 import { debutPas } from './pas'
 import PlageHeuresCreuses from './plage-hc'
-import { hcTempo, periodes } from './prix'
+import { hcTempo, lastPeriode, periodes } from './prix'
 import {
   JourTempo,
   MesureConsommation,
@@ -13,7 +13,9 @@ import {
   Pas,
   CoutKey,
   ConsoKey,
-  TypeSerie
+  TypeSerie,
+  type TarifCalcul,
+  type PeriodeTarifaire
 } from './types'
 
 const INCONNU = 0
@@ -24,10 +26,27 @@ const ROUGE = 3
 export function calculerTarifs(
   mesures: MesureConsommation[],
   couleurs: JourTempo[],
-  plagesHC: PlageHeuresCreuses[]
+  plagesHC: PlageHeuresCreuses[],
+  tarif: TarifCalcul,
+  perso?: PeriodeTarifaire
 ): MesureCout[] {
   let out: MesureCout[] = []
   let couleursRestantes: JourTempo[] = [...couleurs]
+
+  let periodesUtilisees = periodes
+
+  if (tarif === 'edf-actuel') {
+    periodesUtilisees = [
+      {
+        ...lastPeriode,
+        debut: '2000-01-01T00:00:00+01:00',
+      }
+    ]
+  }
+
+  if (tarif === 'custom' && perso) {
+    periodesUtilisees = [perso]
+  }
 
   for (let mesure of mesures) {
     let jour = mesure.date
@@ -42,7 +61,7 @@ export function calculerTarifs(
     let index = couleursRestantes.indexOf(jourTempo)
     if (index > 0) couleursRestantes.splice(0, index)
 
-    let tarif = periodes
+    let tarif = periodesUtilisees
       .filter((p) => DateTime.fromISO(p.debut) <= mesure.date)
       .pop()
     if (!tarif) continue
